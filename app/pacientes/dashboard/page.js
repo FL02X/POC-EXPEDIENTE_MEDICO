@@ -154,8 +154,8 @@ export default function PacientesDashboard() {
               disabled={loading}
               style={{ width: '20px', height: '20px', cursor: loading ? 'not-allowed' : 'pointer' }}
             />
-            <span style={{ fontWeight: '700', color: permission ? '#0b3d91' : '#666666' }}>
-              {permission ? 'Acceso activo' : 'Acceso inactivo'}
+            <span style={{ fontWeight: '700'}}>
+              Permitir acceso al expediente
             </span>
           </label>
         </div>
