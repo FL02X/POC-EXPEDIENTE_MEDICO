@@ -1,11 +1,7 @@
-# PoC - Expediente Clínico Electrónico (Next.js + Tailwind)
+# PoC - Expediente Clínico Electrónico 
 
-Instrucciones rápidas:
+1. npm install
 
-1. Instalar dependencias:
-   npm install
-
-2. Ejecutar en modo desarrollo:
-   npm run dev
+2. npm run dev
 
 Abrir http://localhost:3000
