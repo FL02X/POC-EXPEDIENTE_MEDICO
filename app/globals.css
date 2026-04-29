@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --gov-navy: #0b3d91;
+  --gov-gray: #6B7280;
+}
+
+html, body, #__next {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #111;
+  background: #fff;
+}
+
+* {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 12px;
+}
+
+.header {
+  background: var(--gov-navy);
+  color: white;
+  padding: 8px 0;
+}
+
+.card {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 12px;
+  background: white;
+}
+
+button {
+  background: var(--gov-navy);
+  color: white;
+  border: 1px solid var(--gov-navy);
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+input, textarea {
+  border: 1px solid #ccc;
+  padding: 6px 8px;
+  font-size: 14px;
+}
+
+.small-muted {
+  font-size: 12px;
+  color: var(--gov-gray);
+}
+
+table {
+  border-collapse: collapse;
+}
+table td, table th {
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: left;
+}
+
+a {
+  color: var(--gov-navy);
+  text-decoration: none;
+}
+
+h1 { font-size: 18px; margin: 0; }
+h2 { font-size: 16px; margin-bottom: 8px; }
