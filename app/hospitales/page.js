@@ -9,6 +9,7 @@ export default function HospitalesPage() {
   const [loading, setLoading] = useState(false)
   const [expediente, setExpediente] = useState(null)
   const [error, setError] = useState('')
+  
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -68,6 +69,7 @@ export default function HospitalesPage() {
             </tbody>
           </table>
         )}
+        
       </div>
     </div>
   )
