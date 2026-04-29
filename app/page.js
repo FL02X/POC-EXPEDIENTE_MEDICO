@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default function Home() {
   return (
     <section>
-      <h2 className="text-2xl font-bold mb-4">Avance 2 — Sistemas Distribuidos (PROOF OF CONCEPT)</h2>
+      
 
       <div>
         <Link href="/pacientes">
