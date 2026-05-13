@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 
+const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || '/api/gateway'
+
 export default function HospitalesPage() {
   // PREFILL CON EJEMPLO...
   const [cedula, setCedula] = useState('87654321')
@@ -17,7 +19,7 @@ export default function HospitalesPage() {
     setError('')
     setExpediente(null)
     try {
-      const res = await fetch('/api/gateway', {
+      const res = await fetch(GATEWAY_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'request_expediente', medicoCedula: cedula, pacienteId })

@@ -1,0 +1,10 @@
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+ARG NEXT_PUBLIC_GATEWAY_URL=/api/gateway
+ENV NEXT_PUBLIC_GATEWAY_URL=${NEXT_PUBLIC_GATEWAY_URL}
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "run", "start"]

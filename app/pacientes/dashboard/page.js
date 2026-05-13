@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
+const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || '/api/gateway'
+
 export default function PacientesDashboard() {
   const pacienteId = '1'
   const [permission, setPermission] = useState(false)
@@ -21,7 +23,7 @@ export default function PacientesDashboard() {
 
     async function load() {
       try {
-        const res = await fetch('/api/gateway', {
+        const res = await fetch(GATEWAY_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'get_permission', pacienteId })
@@ -42,7 +44,7 @@ export default function PacientesDashboard() {
     setLoading(true)
     setMessage('')
     try {
-      const res = await fetch('/api/gateway', {
+      const res = await fetch(GATEWAY_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'grant_permission', pacienteId, value: !permission })
@@ -73,7 +75,7 @@ export default function PacientesDashboard() {
     setLoading(true)
     setMessage('')
     try {
-      const res = await fetch('/api/gateway', {
+      const res = await fetch(GATEWAY_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'grant_permission', pacienteId, value: true })
@@ -104,7 +106,7 @@ export default function PacientesDashboard() {
     setLoading(true)
     setMessage('')
     try {
-      const res = await fetch('/api/gateway', {
+      const res = await fetch(GATEWAY_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'grant_permission', pacienteId, value: false })
