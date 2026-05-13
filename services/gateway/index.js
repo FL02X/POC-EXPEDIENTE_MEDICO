@@ -10,6 +10,44 @@ const AUTH_URL = process.env.AUTH_URL || 'http://localhost:4001'
 const CEDULA_URL = process.env.CEDULA_URL || 'http://localhost:4003'
 const EXPEDIENTE_URL = process.env.EXPEDIENTE_URL || 'http://localhost:4002'
 
+const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://rabbitmq'
+const EVENTS_EXCHANGE = 'events'
+
+// RabbitMQ channel placeholder
+let amqpConn = null
+let amqpChannel = null
+
+async function connectRabbit(retries = 5, delayMs = 3000) {
+	const amqplib = require('amqplib')
+	for (let attempt = 1; attempt <= retries; attempt++) {
+		try {
+			amqpConn = await amqplib.connect(RABBITMQ_URL)
+			amqpChannel = await amqpConn.createChannel()
+			await amqpChannel.assertExchange(EVENTS_EXCHANGE, 'topic', { durable: false })
+			console.log('Connected to RabbitMQ at', RABBITMQ_URL)
+			return
+		} catch (err) {
+			console.warn(`RabbitMQ connect attempt ${attempt} failed: ${err && err.message}`)
+			if (attempt < retries) await new Promise(r => setTimeout(r, delayMs))
+			else console.error('RabbitMQ: all connection attempts failed')
+		}
+	}
+}
+
+function publishEvent(routingKey, payload) {
+	try {
+		if (!amqpChannel) {
+			console.warn('publishEvent: no amqpChannel available')
+			return false
+		}
+		const buf = Buffer.from(JSON.stringify(payload))
+		return amqpChannel.publish(EVENTS_EXCHANGE, routingKey, buf)
+	} catch (e) {
+		console.error('publishEvent error:', e && e.message)
+		return false
+	}
+}
+
 // Estado en memoria de permisos (pacienteId => boolean)
 const permissions = {}
 
@@ -40,6 +78,15 @@ app.post('/api/gateway', async (req, res) => {
 
 			permissions[pacienteId] = true
 			trace.push(`permission set for ${pacienteId}`)
+			// Publish event to RabbitMQ (best-effort)
+			const event = {
+				type: 'permission',
+				action: 'granted',
+				pacienteId: String(pacienteId),
+				at: new Date().toISOString()
+			}
+			const published = publishEvent('permission.granted', event)
+			trace.push(`event_published:${published}`)
 			return res.json({ success: true, permission: permissions[pacienteId], trace })
 		}
 
@@ -75,6 +122,9 @@ app.post('/api/gateway', async (req, res) => {
 		return res.status(500).json({ error: 'Internal Server Error', detail: String(e && e.message), trace })
 	}
 })
+
+// Intentar conectar a RabbitMQ (no bloqueante)
+connectRabbit().catch(() => {})
 
 app.listen(PORT, () => {
 	console.log(`Gateway service escuchando en puerto ${PORT}`)

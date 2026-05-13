@@ -1,7 +1,15 @@
 version: '3.8'
 
 services:
-  # TODO: Servicios serán añadidos y completados en FASE 6
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672" # management UI: http://localhost:15672 (guest/guest)
+    networks:
+      - medica-network
+
+  # NOTE: other services will be added in FASE 6 (gateway, auth, expediente, cedula, websocket, frontend)
 
 networks:
   medica-network:
