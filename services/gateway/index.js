@@ -13,7 +13,6 @@ const EXPEDIENTE_URL = process.env.EXPEDIENTE_URL || 'http://localhost:4002'
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://rabbitmq'
 const EVENTS_EXCHANGE = 'events'
 
-// RabbitMQ channel placeholder
 let amqpConn = null
 let amqpChannel = null
 
@@ -48,7 +47,6 @@ function publishEvent(routingKey, payload) {
 	}
 }
 
-// Estado en memoria de permisos (pacienteId => boolean)
 const permissions = {}
 
 app.post('/api/gateway', async (req, res) => {
@@ -78,7 +76,7 @@ app.post('/api/gateway', async (req, res) => {
 
 			permissions[pacienteId] = true
 			trace.push(`permission set for ${pacienteId}`)
-			// Publish event to RabbitMQ (best-effort)
+			// PUBLICA EVENTO
 			const event = {
 				type: 'permission',
 				action: 'granted',
@@ -94,7 +92,7 @@ app.post('/api/gateway', async (req, res) => {
 			const { medicoCedula, pacienteId } = body
 			trace.push('request_expediente start')
 
-			// validar cédula
+			// VALIDAR CEDULA
 			trace.push('call cedula.validate')
 			const cedulaRes = await axios.post(`${CEDULA_URL}/cedula/validate`, { cedula: medicoCedula }, { headers: { 'x-service-token': SERVICE_TOKEN } })
 			if (!cedulaRes || !cedulaRes.data || !cedulaRes.data.valid) {
@@ -123,7 +121,7 @@ app.post('/api/gateway', async (req, res) => {
 	}
 })
 
-// Intentar conectar a RabbitMQ (no bloqueante)
+// INTENTA CONECTAR A RABBITMQ
 connectRabbit().catch(() => {})
 
 app.listen(PORT, () => {

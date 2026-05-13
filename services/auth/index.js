@@ -6,7 +6,7 @@ app.use(express.json());
 const SERVICE_TOKEN = process.env.SERVICE_TOKEN || 'supersecrettoken123';
 const PORT = process.env.AUTH_PORT || 4001;
 
-// Middleware: validar header x-service-token en todas las requests
+// VALIDA x-service-header
 app.use((req, res, next) => {
   const token = req.headers['x-service-token'];
   if (!token || token !== SERVICE_TOKEN) {
@@ -26,7 +26,7 @@ app.post('/auth/validate', (req, res) => {
       return res.status(400).json({ success: false, error: 'Token inválido o vacío' });
     }
 
-    // En una PoC, cualquier token no vacío pasa
+    // CUAL TOKEN NO VACIO PASA (POR AHORA)
     res.status(200).json({ success: true, service: 'auth' });
   } catch (err) {
     console.error('Error en auth/validate:', err);

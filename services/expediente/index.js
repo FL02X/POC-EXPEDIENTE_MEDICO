@@ -6,7 +6,7 @@ app.use(express.json());
 const SERVICE_TOKEN = process.env.SERVICE_TOKEN || 'supersecrettoken123';
 const PORT = process.env.EXPEDIENTE_PORT || 4002;
 
-// Datos de pacientes mock (extraídos del mockData original)
+// MOCK DATA
 const patients = {
   '1': {
     id: '1',
@@ -22,7 +22,7 @@ const patients = {
   }
 };
 
-// Middleware: validar header x-service-token en todas las requests
+// VALIDA x-service-token
 app.use((req, res, next) => {
   const token = req.headers['x-service-token'];
   if (!token || token !== SERVICE_TOKEN) {

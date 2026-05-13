@@ -6,7 +6,7 @@ app.use(express.json());
 const SERVICE_TOKEN = process.env.SERVICE_TOKEN || 'supersecrettoken123';
 const PORT = process.env.CEDULA_PORT || 4003;
 
-// Middleware: validar header x-service-token en todas las requests
+// VALIDA x-service-header
 app.use((req, res, next) => {
   const token = req.headers['x-service-token'];
   if (!token || token !== SERVICE_TOKEN) {
@@ -26,7 +26,7 @@ app.post('/cedula/validate', (req, res) => {
       return res.status(400).json({ valid: false, reason: 'Cédula debe ser una cadena' });
     }
 
-    // Validar formato: 8-12 caracteres numéricos
+    // VALIDA 8-12 CARACTERES NUMERICOS...
     const isValid = /^\d{8,12}$/.test(cedula);
 
     if (isValid) {
