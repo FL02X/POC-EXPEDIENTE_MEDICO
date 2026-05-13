@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  # TODO: Servicios serán añadidos y completados en FASE 6
+
+networks:
+  medica-network:
+    driver: bridge
