@@ -11,7 +11,6 @@ Requisitos:
 PASOS...
 - Abrir el proyecto
 - npm install
-- Crear el archivo .env en la carpeta infra
 - Dentro de la carpeta infra, haz una copia de "env.example" y cambia el nombre de la copia a ".env"
 
 

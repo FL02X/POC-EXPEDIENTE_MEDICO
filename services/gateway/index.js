@@ -4,6 +4,30 @@ const axios = require('axios')
 const app = express()
 app.use(express.json())
 
+const allowedOrigins = new Set(
+	(process.env.CORS_ALLOWED_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000')
+		.split(',')
+		.map(origin => origin.trim())
+		.filter(Boolean)
+)
+
+app.use((req, res, next) => {
+	const origin = req.headers.origin
+	if (origin && allowedOrigins.has(origin)) {
+		res.setHeader('Access-Control-Allow-Origin', origin)
+		res.setHeader('Vary', 'Origin')
+		res.setHeader('Access-Control-Allow-Credentials', 'true')
+		res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+		res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-service-token')
+	}
+
+	if (req.method === 'OPTIONS') {
+		return res.sendStatus(204)
+	}
+
+	next()
+})
+
 const SERVICE_TOKEN = process.env.SERVICE_TOKEN || 'supersecrettoken123'
 const PORT = process.env.GATEWAY_PORT || 4000
 const AUTH_URL = process.env.AUTH_URL || 'http://localhost:4001'
@@ -62,7 +86,7 @@ app.post('/api/gateway', async (req, res) => {
 		}
 
 		if (action === 'grant_permission') {
-			const { pacienteId, token } = body
+			const { pacienteId, token, value } = body
 			trace.push('grant_permission start')
 
 			// validar identidad del token con el servicio de auth
@@ -74,16 +98,20 @@ app.post('/api/gateway', async (req, res) => {
 			}
 			trace.push('auth success')
 
-			permissions[pacienteId] = true
-			trace.push(`permission set for ${pacienteId}`)
+			// Respect the provided value (true = grant, false = revoke). Default to true if not provided.
+			const target = typeof value === 'boolean' ? value : true
+			permissions[pacienteId] = !!target
+			trace.push(`permission set for ${pacienteId}: ${permissions[pacienteId]}`)
+
 			// PUBLICA EVENTO
 			const event = {
 				type: 'permission',
-				action: 'granted',
+				action: target ? 'granted' : 'revoked',
 				pacienteId: String(pacienteId),
 				at: new Date().toISOString()
 			}
-			const published = publishEvent('permission.granted', event)
+			const routing = target ? 'permission.granted' : 'permission.revoked'
+			const published = publishEvent(routing, event)
 			trace.push(`event_published:${published}`)
 			return res.json({ success: true, permission: permissions[pacienteId], trace })
 		}
