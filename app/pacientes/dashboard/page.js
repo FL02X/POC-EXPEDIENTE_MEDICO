@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useWebSocket } from '../../lib/useWebSocket'
 import { ConnectionStatus } from '../../components/ConnectionStatus'
 
-const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || '/api/gateway'
+const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://localhost:4000/api/gateway'
 
 export default function PacientesDashboard() {
   const pacienteId = '1'
